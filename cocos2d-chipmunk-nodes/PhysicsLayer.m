@@ -7,10 +7,14 @@
 //
 
 #import "PhysicsLayer.h"
+#import "PhysicsObject.h"
+
 
 @interface PhysicsLayer() {
     CCPhysicsDebugNode* _debugLayer;
     cpShape *_walls[4];
+    NSPointerArray* _bodiesToRemove;
+    
 }
 
 @end
@@ -18,6 +22,33 @@
 @implementation PhysicsLayer
 
 @dynamic showPhysicsDebugging;
+
+void CallCollisionCallbacksForArbiter(cpArbiter *arb, CollisionPhase phase) {
+    CP_ARBITER_GET_BODIES(arb, bodyA, bodyB);
+    
+    PhysicsObject* objectA = cpBodyGetUserData(bodyA);
+    PhysicsObject* objectB = cpBodyGetUserData(bodyA);
+    
+    
+    if (objectA != nil && objectB != nil) {
+        [objectA objectDidCollideWithObject:objectB collisionPhase:phase arbiter:arb];
+        [objectB objectDidCollideWithObject:objectA collisionPhase:phase arbiter:arb];
+    }
+    
+}
+
+cpBool CollisionBegin (cpArbiter *arb, cpSpace *space, void *data) {
+    CallCollisionCallbacksForArbiter(arb, PhysicsObjectCollisionBegan);
+    return cpTrue;
+};
+
+void CollisionContinued (cpArbiter *arb, cpSpace *space, void *data) {
+    CallCollisionCallbacksForArbiter(arb, PhysicsObjectCollisionContinued);
+}
+
+void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
+    CallCollisionCallbacksForArbiter(arb, PhysicsObjectCollisionEnded);
+};
 
 @synthesize chipmunkSpace = _chipmunkSpace;
 
@@ -30,6 +61,13 @@
 
 - (void)updatePhysics:(ccTime)deltaTime {
     cpSpaceStep(_chipmunkSpace, deltaTime);
+    
+    for (int i = 0; i < _bodiesToRemove.count; i++) {
+        cpBody* body = [_bodiesToRemove pointerAtIndex:i];
+        cpSpaceRemoveBody(self.chipmunkSpace, body);
+    }
+    
+    [_bodiesToRemove setCount:0];
 }
 
 - (id)init {
@@ -42,6 +80,17 @@
     }
     
     return self;
+}
+
+- (void)dealloc {
+    for (int i = 0; i < 4; i++) {
+        cpShapeDestroy(_walls[i]);
+    }
+    
+    cpSpaceDestroy(self.chipmunkSpace);
+    
+    [super dealloc];
+    
 }
 
 - (void) initPhysics {
@@ -70,8 +119,15 @@
 	}
 	
 	_debugLayer = [CCPhysicsDebugNode debugNodeForCPSpace:self.chipmunkSpace];
-    [_debugLayer retain];
     [self addChild:_debugLayer z:100];
+<<<<<<< HEAD
+=======
+	_debugLayer.visible = YES;
+    
+    cpSpaceSetDefaultCollisionHandler(self.chipmunkSpace, &CollisionBegin, NULL, &CollisionContinued, &CollisionEnd, NULL);
+    
+    _bodiesToRemove = [NSPointerArray pointerArrayWithOptions:NSPointerFunctionsOpaquePersonality];
+>>>>>>> e5be86e4e5f00b152272dbd113ac81a6a2aeb934
 	
     [self setShowPhysicsDebugging:NO];
 	
@@ -90,8 +146,17 @@
 }
 
 - (void)onEnter {
-    [super onEnter];
+    [super onEnter];    
+}
+
+- (void)removeChild:(CCNode *)child cleanup:(BOOL)cleanup {
+    if ([child isKindOfClass:[PhysicsObject class]]) {
+        PhysicsObject* physicsObject = (PhysicsObject*)child;
+        [_bodiesToRemove addPointer:physicsObject.chipmunkBody];
+    }
     
+    [super removeChild:child cleanup:cleanup];
+        
 }
 
 @end

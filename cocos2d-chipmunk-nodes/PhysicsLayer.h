@@ -9,6 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
+typedef enum  {
+    PhysicsObjectCollisionBegan = 0,
+    PhysicsObjectCollisionContinued, // not called for sensors
+    PhysicsObjectCollisionEnded
+} CollisionPhase;
+
 @protocol CPPhysicsDelegate <NSObject>
 
 @property (assign) cpSpace* chipmunkSpace;
