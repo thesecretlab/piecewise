@@ -42,15 +42,18 @@
     self.physicsDelegate = parent;
     [[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
     
-    
-    
 }
+
+- (void)setCPBody:(cpBody *)CPBody {
+    cpBodySetUserData(CPBody, self);
+    [super setCPBody:CPBody];    
+}
+
 - (void) setDraggable:(BOOL)draggable {
     
     _draggable = draggable;
     
     if (_draggable) {
-        
         
         if (_gripBody == NULL) {
         
@@ -70,6 +73,9 @@
     
 }
 
+- (void) objectDidCollideWithObject:(PhysicsObject *)otherObject collisionPhase:(CollisionPhase)phase arbiter:(cpArbiter *)collisionArbiter {
+    // no-op; override
+}
 
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     

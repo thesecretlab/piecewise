@@ -14,4 +14,7 @@
 @property (unsafe_unretained) id<CPPhysicsDelegate> physicsDelegate;
 @property (nonatomic, assign) BOOL draggable;
 
+// Override this method to receive notifications of collisions with objects
+- (void) objectDidCollideWithObject:(PhysicsObject*)otherObject collisionPhase:(CollisionPhase)phase arbiter:(cpArbiter*)collisionArbiter;
+
 @end
