@@ -120,14 +120,12 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 	
 	_debugLayer = [CCPhysicsDebugNode debugNodeForCPSpace:self.chipmunkSpace];
     [self addChild:_debugLayer z:100];
-<<<<<<< HEAD
-=======
+
 	_debugLayer.visible = YES;
     
     cpSpaceSetDefaultCollisionHandler(self.chipmunkSpace, &CollisionBegin, NULL, &CollisionContinued, &CollisionEnd, NULL);
     
     _bodiesToRemove = [NSPointerArray pointerArrayWithOptions:NSPointerFunctionsOpaquePersonality];
->>>>>>> e5be86e4e5f00b152272dbd113ac81a6a2aeb934
 	
     [self setShowPhysicsDebugging:NO];
 	
