@@ -21,4 +21,7 @@
     
 }
 
+// Whether physics debugging should be visible. Defaults to NO.
+@property (assign) BOOL showPhysicsDebugging;
+
 @end

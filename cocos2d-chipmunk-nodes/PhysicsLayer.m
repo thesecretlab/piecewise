@@ -17,6 +17,8 @@
 
 @implementation PhysicsLayer
 
+@dynamic showPhysicsDebugging;
+
 @synthesize chipmunkSpace = _chipmunkSpace;
 
 - (cpSpace *)chipmunkSpace {
@@ -43,7 +45,7 @@
 }
 
 - (void) initPhysics {
-    CGSize s = [[CCDirector sharedDirector] winSize];
+    CGSize s = self.contentSize;
 
 	//
 	// rogue shapes
@@ -70,8 +72,17 @@
 	_debugLayer = [CCPhysicsDebugNode debugNodeForCPSpace:self.chipmunkSpace];
     [_debugLayer retain];
     [self addChild:_debugLayer z:100];
-	_debugLayer.visible = YES;
 	
+    [self setShowPhysicsDebugging:NO];
+	
+}
+
+- (void)setShowPhysicsDebugging:(BOOL)showPhysicsDebugging {
+    _debugLayer.visible = showPhysicsDebugging;
+}
+
+- (BOOL)showPhysicsDebugging {
+    return _debugLayer.visible;
 }
 
 - (void)update:(ccTime)delta {
