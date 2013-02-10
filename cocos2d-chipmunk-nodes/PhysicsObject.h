@@ -9,8 +9,9 @@
 #import "CCPhysicsSprite.h"
 #import "PhysicsLayer.h"
 
-@interface PhysicsObject : CCPhysicsSprite
+@interface PhysicsObject : CCPhysicsSprite <CCTouchOneByOneDelegate>
 
 @property (unsafe_unretained) id<CPPhysicsDelegate> physicsDelegate;
+@property (nonatomic, assign) BOOL draggable;
 
 @end
