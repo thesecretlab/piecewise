@@ -53,6 +53,8 @@
     
     _draggable = draggable;
     
+    cpSpace* space = [self.physicsDelegate chipmunkSpace];
+    
     if (_draggable) {
         
         if (_gripBody == NULL) {
@@ -64,11 +66,24 @@
             cpShapeSetFriction( mouseShape, 0.5f );
             cpShapeSetSensor(mouseShape, cpTrue);
             
-            cpSpaceAddShape(self.physicsDelegate.chipmunkSpace, mouseShape);
+            cpSpaceAddShape(space, mouseShape);
         }
     } else {
-        cpBodyDestroy(_gripBody);
-        cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
+        
+        if (_gripBody) {
+            if (cpSpaceContainsBody(space, _gripBody));
+            
+            cpBodyEachShape_b(self.CPBody, ^(cpShape *shape) {
+                cpSpaceRemoveShape(space, shape);
+                cpShapeFree(shape);
+            });
+            
+            if (_gripJoint != NULL)
+                cpSpaceRemoveConstraint(space, _gripJoint);
+            
+            cpBodyDestroy(_gripBody);
+            _gripBody = NULL;
+        }
     }
     
 }
@@ -81,6 +96,9 @@
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     
     if (self.draggable == NO)
+        return NO;
+    
+    if (_gripJoint != NULL)
         return NO;
     
     CGPoint position = [[CCDirector sharedDirector] convertTouchToGL:touch];
@@ -109,8 +127,11 @@
     if (self.draggable == NO)
         return;
     
-    cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
-    cpConstraintDestroy(_gripJoint);
+    if (_gripJoint != NULL) {
+        cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
+        cpConstraintFree(_gripJoint);
+        _gripJoint = NULL;
+    }
 }
 
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -135,13 +156,23 @@
 
 - (void)objectWasRemovedFromSpace {
     if (self.CPBody) {
+        
+        // We need to remove all shapes assocated with this body before the body can be removed
         cpSpace* space = cpBodyGetSpace(self.CPBody);
         cpBodyEachShape_b(self.CPBody, ^(cpShape *shape) {
             cpSpaceRemoveShape(space, shape);
             cpShapeFree(shape);
         });
+        
+        // Tidy up the grip body and joint
+        self.draggable = NO;
+        
+        // Now free the body
         cpSpaceRemoveBody(space, self.CPBody);
         cpBodyFree(self.CPBody);
+        
+        
+        
     }
 }
 
