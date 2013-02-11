@@ -30,7 +30,7 @@
         if ([parent conformsToProtocol:@protocol(CPPhysicsDelegate)])
             break;
         
-        parent = self.parent;
+        parent = [parent parent];
         
     } while (parent != nil);
     
