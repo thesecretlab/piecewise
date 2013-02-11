@@ -142,10 +142,11 @@
     CGPoint position = [[CCDirector sharedDirector] convertTouchToGL:touch];
     
     
-    CGFloat framesPerSecond = 1.0 / [[CCDirector sharedDirector] secondsPerFrame];
     cpVect movementOffset = cpvsub(position, cpBodyGetPos(_gripBody));
     
-    cpBodySetVel(_gripBody, cpvmult(movementOffset, framesPerSecond));
+    NSLog(@"Movement offset: %@", NSStringFromCGPoint(movementOffset));
+    
+    cpBodySetVel(_gripBody, cpvmult(movementOffset, [[CCDirector sharedDirector] secondsPerFrame]));
     cpBodySetPos(_gripBody, position);
     
 }
