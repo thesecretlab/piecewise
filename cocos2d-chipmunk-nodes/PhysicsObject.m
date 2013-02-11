@@ -144,8 +144,6 @@
     
     cpVect movementOffset = cpvsub(position, cpBodyGetPos(_gripBody));
     
-    NSLog(@"Movement offset: %@", NSStringFromCGPoint(movementOffset));
-    
     cpBodySetVel(_gripBody, cpvmult(movementOffset, [[CCDirector sharedDirector] secondsPerFrame]));
     cpBodySetPos(_gripBody, position);
     
