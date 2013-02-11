@@ -19,7 +19,6 @@
     
 }
 
-
 - (void)onEnter {
     [super onEnter];
     
@@ -45,7 +44,8 @@
 }
 
 - (void)setCPBody:(cpBody *)CPBody {
-    cpBodySetUserData(CPBody, self);
+    if (CPBody != NULL)
+        cpBodySetUserData(CPBody, self);
     [super setCPBody:CPBody];    
 }
 
@@ -75,6 +75,7 @@
 
 - (void) objectDidCollideWithObject:(PhysicsObject *)otherObject collisionPhase:(CollisionPhase)phase arbiter:(cpArbiter *)collisionArbiter {
     // no-op; override
+    
 }
 
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -130,6 +131,18 @@
 
 - (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event {
     [self ccTouchEnded:touch withEvent:event];
+}
+
+- (void)objectWasRemovedFromSpace {
+    if (self.CPBody) {
+        cpSpace* space = cpBodyGetSpace(self.CPBody);
+        cpBodyEachShape_b(self.CPBody, ^(cpShape *shape) {
+            cpSpaceRemoveShape(space, shape);
+            cpShapeFree(shape);
+        });
+        cpSpaceRemoveBody(space, self.CPBody);
+        cpBodyFree(self.CPBody);
+    }
 }
 
 

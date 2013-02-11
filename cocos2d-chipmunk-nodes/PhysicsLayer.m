@@ -13,7 +13,6 @@
 @interface PhysicsLayer() {
     CCPhysicsDebugNode* _debugLayer;
     cpShape *_walls[4];
-    NSPointerArray* _bodiesToRemove;
     
 }
 
@@ -22,6 +21,16 @@
 @implementation PhysicsLayer
 
 @dynamic showPhysicsDebugging;
+
+
+void RemoveBodyOnPostStep(cpSpace *space, void *key, void *data) {
+    
+    PhysicsObject* object = key;
+    
+    [object objectWasRemovedFromSpace];
+    
+}
+
 
 void CallCollisionCallbacksForArbiter(cpArbiter *arb, CollisionPhase phase) {
     CP_ARBITER_GET_BODIES(arb, bodyA, bodyB);
@@ -62,12 +71,7 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 - (void)updatePhysics:(ccTime)deltaTime {
     cpSpaceStep(_chipmunkSpace, deltaTime);
     
-    for (int i = 0; i < _bodiesToRemove.count; i++) {
-        cpBody* body = [_bodiesToRemove pointerAtIndex:i];
-        cpSpaceRemoveBody(self.chipmunkSpace, body);
-    }
     
-    [_bodiesToRemove setCount:0];
 }
 
 - (id)init {
@@ -125,8 +129,6 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
     
     cpSpaceSetDefaultCollisionHandler(self.chipmunkSpace, &CollisionBegin, NULL, &CollisionContinued, &CollisionEnd, NULL);
     
-    _bodiesToRemove = [NSPointerArray pointerArrayWithOptions:NSPointerFunctionsOpaquePersonality];
-	
     [self setShowPhysicsDebugging:NO];
 	
 }
@@ -149,8 +151,11 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 
 - (void)removeChild:(CCNode *)child cleanup:(BOOL)cleanup {
     if ([child isKindOfClass:[PhysicsObject class]]) {
+        
         PhysicsObject* physicsObject = (PhysicsObject*)child;
-        [_bodiesToRemove addPointer:physicsObject.chipmunkBody];
+        cpSpaceAddPostStepCallback(_chipmunkSpace, &RemoveBodyOnPostStep, physicsObject, NULL);
+        
+       
     }
     
     [super removeChild:child cleanup:cleanup];

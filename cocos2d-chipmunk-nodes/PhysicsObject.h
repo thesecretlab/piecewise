@@ -17,4 +17,7 @@
 // Override this method to receive notifications of collisions with objects
 - (void) objectDidCollideWithObject:(PhysicsObject*)otherObject collisionPhase:(CollisionPhase)phase arbiter:(cpArbiter*)collisionArbiter;
 
+// By default, destroys the body and associated shapes. This is called after simulation is complete, so cpSpaceRemoveBody etc will work.
+- (void) objectWasRemovedFromSpace;
+
 @end
