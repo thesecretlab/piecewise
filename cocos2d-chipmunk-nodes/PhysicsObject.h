@@ -20,4 +20,7 @@
 // By default, destroys the body and associated shapes. This is called after simulation is complete, so cpSpaceRemoveBody etc will work.
 - (void) objectWasRemovedFromSpace;
 
+// Called every frame, before physics is applied.
+- (void) objectWillUpdatePhysics:(ccTime)deltaTime;
+
 @end

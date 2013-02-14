@@ -36,7 +36,7 @@ void CallCollisionCallbacksForArbiter(cpArbiter *arb, CollisionPhase phase) {
     CP_ARBITER_GET_BODIES(arb, bodyA, bodyB);
     
     PhysicsObject* objectA = cpBodyGetUserData(bodyA);
-    PhysicsObject* objectB = cpBodyGetUserData(bodyA);
+    PhysicsObject* objectB = cpBodyGetUserData(bodyB);
     
     
     if (objectA != nil && objectB != nil) {
@@ -69,6 +69,14 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 - (void)updatePhysics:(ccTime)deltaTime {
+    
+    cpSpaceEachBody_b(_chipmunkSpace, ^(cpBody *body) {
+        PhysicsObject* object = cpBodyGetUserData(body);
+        if ([object isKindOfClass:[PhysicsObject class]]) {
+            [object objectWillUpdatePhysics:deltaTime];
+        }
+    });
+    
     cpSpaceStep(_chipmunkSpace, deltaTime);
     
     

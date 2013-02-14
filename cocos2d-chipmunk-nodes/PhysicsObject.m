@@ -175,6 +175,10 @@
     }
 }
 
+- (void)objectWillUpdatePhysics:(ccTime)deltaTime {
+    // no-op; designed to be overridden
+}
+
 
 
 @end
