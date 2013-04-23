@@ -14,10 +14,6 @@
     cpConstraint* _gripJoint;
 }
 
-- (void)dealloc {
-    [super dealloc];
-    
-}
 
 - (void)onEnter {
     [super onEnter];
@@ -43,9 +39,13 @@
     
 }
 
+- (void)onExit {
+    [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:self];
+}
+
 - (void)setCPBody:(cpBody *)CPBody {
     if (CPBody != NULL)
-        cpBodySetUserData(CPBody, self);
+        cpBodySetUserData(CPBody, (void*)CFBridgingRetain(self));
     [super setCPBody:CPBody];    
 }
 

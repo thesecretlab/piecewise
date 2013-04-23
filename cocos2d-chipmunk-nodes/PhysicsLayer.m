@@ -25,7 +25,7 @@
 
 void RemoveBodyOnPostStep(cpSpace *space, void *key, void *data) {
     
-    PhysicsObject* object = key;
+    PhysicsObject* object = CFBridgingRelease(key);
     
     [object objectWasRemovedFromSpace];
     
@@ -35,8 +35,8 @@ void RemoveBodyOnPostStep(cpSpace *space, void *key, void *data) {
 void CallCollisionCallbacksForArbiter(cpArbiter *arb, CollisionPhase phase) {
     CP_ARBITER_GET_BODIES(arb, bodyA, bodyB);
     
-    PhysicsObject* objectA = cpBodyGetUserData(bodyA);
-    PhysicsObject* objectB = cpBodyGetUserData(bodyB);
+    PhysicsObject* objectA = (__bridge PhysicsObject *)(cpBodyGetUserData(bodyA));
+    PhysicsObject* objectB = (__bridge PhysicsObject *)(cpBodyGetUserData(bodyB));
     
     
     if (objectA != nil && objectB != nil) {
@@ -71,7 +71,7 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 - (void)updatePhysics:(ccTime)deltaTime {
     
     cpSpaceEachBody_b(_chipmunkSpace, ^(cpBody *body) {
-        PhysicsObject* object = cpBodyGetUserData(body);
+        PhysicsObject* object = (__bridge PhysicsObject *)(cpBodyGetUserData(body));
         if ([object isKindOfClass:[PhysicsObject class]]) {
             [object objectWillUpdatePhysics:deltaTime];
         }
@@ -101,7 +101,6 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
     
     cpSpaceDestroy(self.chipmunkSpace);
     
-    [super dealloc];
     
 }
 
@@ -161,9 +160,13 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
     if ([child isKindOfClass:[PhysicsObject class]]) {
         
         PhysicsObject* physicsObject = (PhysicsObject*)child;
-        cpSpaceAddPostStepCallback(_chipmunkSpace, &RemoveBodyOnPostStep, physicsObject, NULL);
         
-       
+        if (cpSpaceIsLocked(_chipmunkSpace)) {
+            cpSpaceAddPostStepCallback(_chipmunkSpace, &RemoveBodyOnPostStep, (__bridge void *)(physicsObject), NULL);
+        } else {
+            cpSpaceRemoveBody(_chipmunkSpace, physicsObject.CPBody);
+        }
+        
     }
     
     [super removeChild:child cleanup:cleanup];

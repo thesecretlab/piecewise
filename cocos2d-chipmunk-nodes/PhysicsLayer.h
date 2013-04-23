@@ -27,6 +27,9 @@ typedef enum  {
     
 }
 
+// override; must call super
+- (void) initPhysics;
+
 // Whether physics debugging should be visible. Defaults to NO.
 @property (assign) BOOL showPhysicsDebugging;
 

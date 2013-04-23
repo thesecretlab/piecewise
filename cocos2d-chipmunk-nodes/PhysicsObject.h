@@ -11,7 +11,7 @@
 
 @interface PhysicsObject : CCPhysicsSprite <CCTouchOneByOneDelegate>
 
-@property (unsafe_unretained) id<CPPhysicsDelegate> physicsDelegate;
+@property (weak) id<CPPhysicsDelegate> physicsDelegate;
 @property (nonatomic, assign) BOOL draggable;
 
 // Override this method to receive notifications of collisions with objects
