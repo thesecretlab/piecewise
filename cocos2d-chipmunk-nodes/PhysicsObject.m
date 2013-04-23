@@ -14,6 +14,7 @@
     cpConstraint* _gripJoint;
 }
 
+@synthesize identifier = identifier;
 
 - (void)onEnter {
     [super onEnter];

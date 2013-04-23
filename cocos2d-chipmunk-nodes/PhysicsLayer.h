@@ -21,6 +21,9 @@ typedef enum  {
 
 - (void) updatePhysics:(ccTime)deltaTime;
 
+- (CCNode*) childWithIdentifier:(NSString*)identifier;
+
+
 @end
 
 @interface PhysicsLayer : CCLayer <CPPhysicsDelegate> {
@@ -29,6 +32,8 @@ typedef enum  {
 
 // override; must call super
 - (void) initPhysics;
+
+- (CCNode*) childWithIdentifier:(NSString*)identifier;
 
 // Whether physics debugging should be visible. Defaults to NO.
 @property (assign) BOOL showPhysicsDebugging;

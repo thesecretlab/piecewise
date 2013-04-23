@@ -23,4 +23,6 @@
 // Called every frame, before physics is applied.
 - (void) objectWillUpdatePhysics:(ccTime)deltaTime;
 
+@property (strong) NSString* identifier;
+
 @end

@@ -173,4 +173,25 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
         
 }
 
+- (CCNode*) searchChild:(CCNode*)node forIdentifier:(NSString*)identifier {
+    
+    if ([node respondsToSelector:@selector(identifier)]) {
+        if ([[(id)node identifier] isEqualToString:identifier])
+            return node;
+    }
+    
+    for (CCNode* child in node.children) {
+        CCNode* result = [self searchChild:child forIdentifier:identifier];
+        if (result != nil)
+            return result;
+    }
+    
+    return nil;
+    
+}
+
+- (CCNode*) childWithIdentifier:(NSString*)identifier {
+    return [self searchChild:self forIdentifier:identifier];
+}
+
 @end
