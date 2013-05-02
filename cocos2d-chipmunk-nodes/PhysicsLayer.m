@@ -38,11 +38,13 @@ void CallCollisionCallbacksForArbiter(cpArbiter *arb, CollisionPhase phase) {
     PhysicsObject* objectA = (__bridge PhysicsObject *)(cpBodyGetUserData(bodyA));
     PhysicsObject* objectB = (__bridge PhysicsObject *)(cpBodyGetUserData(bodyB));
     
-    
-    if (objectA != nil && objectB != nil) {
+    if ([objectA shouldCollideWithBody:bodyB]) {
         [objectA objectDidCollideWithObject:objectB collisionPhase:phase arbiter:arb];
+    }
+    if ([objectB shouldCollideWithBody:bodyA]) {
         [objectB objectDidCollideWithObject:objectA collisionPhase:phase arbiter:arb];
     }
+    
     
 }
 

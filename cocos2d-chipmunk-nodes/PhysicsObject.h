@@ -23,6 +23,8 @@
 // Called every frame, before physics is applied.
 - (void) objectWillUpdatePhysics:(ccTime)deltaTime;
 
+- (BOOL) shouldCollideWithBody:(cpBody*)body;
+
 @property (strong) NSString* identifier;
 
 @end

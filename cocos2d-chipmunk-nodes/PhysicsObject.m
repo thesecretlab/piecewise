@@ -181,5 +181,12 @@
 }
 
 
+- (BOOL) shouldCollideWithBody:(cpBody*)body {
+    if (body == _gripBody)
+        return NO;
+    
+    return YES;
+}
+
 
 @end
