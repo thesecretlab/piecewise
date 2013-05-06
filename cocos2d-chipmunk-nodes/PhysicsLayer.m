@@ -163,10 +163,13 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
         
         PhysicsObject* physicsObject = (PhysicsObject*)child;
         
-        if (cpSpaceIsLocked(_chipmunkSpace)) {
-            cpSpaceAddPostStepCallback(_chipmunkSpace, &RemoveBodyOnPostStep, (__bridge void *)(physicsObject), NULL);
-        } else {
-            cpSpaceRemoveBody(_chipmunkSpace, physicsObject.CPBody);
+        if (physicsObject.CPBody != NULL) {
+            
+            if (cpSpaceIsLocked(_chipmunkSpace)) {
+                cpSpaceAddPostStepCallback(_chipmunkSpace, &RemoveBodyOnPostStep, (__bridge void *)(physicsObject), NULL);
+            } else {
+                cpSpaceRemoveBody(_chipmunkSpace, physicsObject.CPBody);
+            }
         }
         
     }
