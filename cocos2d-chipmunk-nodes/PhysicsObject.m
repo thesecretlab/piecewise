@@ -115,6 +115,8 @@
         
         cpSpaceAddConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
         
+        self.dragging = YES;
+        
         return YES;
     }
     
@@ -131,6 +133,7 @@
     if (_gripJoint != NULL) {
         cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
         cpConstraintFree(_gripJoint);
+        self.dragging = NO;
         _gripJoint = NULL;
     }
 }

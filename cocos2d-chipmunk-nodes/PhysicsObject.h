@@ -26,5 +26,6 @@
 - (BOOL) shouldCollideWithBody:(cpBody*)body;
 
 @property (strong) NSString* identifier;
+@property (nonatomic, assign, getter = isDragging) BOOL dragging;
 
 @end
