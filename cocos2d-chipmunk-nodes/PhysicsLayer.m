@@ -108,22 +108,24 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 
 - (void) initPhysics {
     CGSize s = self.contentSize;
+    
+    const float wallThickness = 20.0f;
 
 	//
 	// rogue shapes
 	// We have to free them manually
 	//
 	// bottom
-	_walls[0] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(0,0), cpv(s.width,0), 0.0f);
+	_walls[0] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(0,0), cpv(s.width,0), wallThickness);
 	
 	// top
-	_walls[1] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(0,s.height), cpv(s.width,s.height), 0.0f);
+	_walls[1] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(0,s.height), cpv(s.width,s.height), wallThickness);
 	
 	// left
-	_walls[2] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(0,0), cpv(0,s.height), 0.0f);
+	_walls[2] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(0,0), cpv(0,s.height), wallThickness);
 	
 	// right
-	_walls[3] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(s.width,0), cpv(s.width,s.height), 0.0f);
+	_walls[3] = cpSegmentShapeNew( self.chipmunkSpace->staticBody, cpv(s.width,0), cpv(s.width,s.height), wallThickness);
 	
 	for( int i=0;i<4;i++) {
 		cpShapeSetElasticity( _walls[i], 1.0f );
