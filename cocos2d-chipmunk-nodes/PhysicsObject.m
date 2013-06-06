@@ -125,6 +125,23 @@
     
 }
 
+- (void) stopPhysics {
+    
+    cpBody* body = self.CPBody;
+    
+    CGPoint position = cpBodyGetPos(body);
+    CGFloat rotation = self.rotation;
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        cpSpaceRemoveBody(cpBodyGetSpace(body), body);
+    }];
+    
+    self.CPBody = nil;
+    self.rotation = rotation;
+    self.position = position;
+    
+}
+
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event {
     
     if (self.draggable == NO)

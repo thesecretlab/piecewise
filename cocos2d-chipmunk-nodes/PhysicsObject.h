@@ -28,4 +28,6 @@
 @property (strong) NSString* identifier;
 @property (nonatomic, assign, getter = isDragging) BOOL dragging;
 
+- (void) stopPhysics;
+
 @end
