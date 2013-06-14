@@ -133,6 +133,11 @@
     CGFloat rotation = self.rotation;
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        cpBodyEachShape_b(body, ^(cpShape *shape) {
+            cpSpaceRemoveShape(cpBodyGetSpace(body), shape);
+            cpShapeFree(shape);
+        });
+        
         cpSpaceRemoveBody(cpBodyGetSpace(body), body);
     }];
     
