@@ -22,7 +22,7 @@ typedef enum  {
 - (void) updatePhysics:(ccTime)deltaTime;
 
 - (CCNode*) childWithIdentifier:(NSString*)identifier;
-
+- (CCNode*) childWithTag:(NSUInteger)tag;
 
 @end
 
