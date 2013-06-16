@@ -56,6 +56,11 @@
     
     cpSpace* space = [self.physicsDelegate chipmunkSpace];
     
+    if (space == NULL) {
+        _draggable = NO;
+        return;
+    }
+    
     if (_draggable) {
         
         if (_gripBody == NULL) {
@@ -99,6 +104,9 @@
     if (self.draggable == NO)
         return NO;
     
+    if (self.CPBody == nil)
+        return NO;
+    
     if (_gripJoint != NULL)
         return NO;
     
@@ -133,6 +141,7 @@
     CGFloat rotation = self.rotation;
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
         cpBodyEachShape_b(body, ^(cpShape *shape) {
             cpSpaceRemoveShape(cpBodyGetSpace(body), shape);
             cpShapeFree(shape);
