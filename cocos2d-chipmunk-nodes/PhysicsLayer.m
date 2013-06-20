@@ -109,7 +109,7 @@ void CollisionEnd (cpArbiter *arb, cpSpace *space, void *data) {
 - (void) initPhysics {
     CGSize s = self.contentSize;
     
-    const float wallThickness = 20.0f;
+    const float wallThickness = 40.0f;
 
 	//
 	// rogue shapes
