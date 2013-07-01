@@ -27,6 +27,7 @@
 
 @property (strong) NSString* identifier;
 @property (nonatomic, assign, getter = isDragging) BOOL dragging;
+@property (assign) float dragBreakForce;
 
 - (void) stopPhysics;
 

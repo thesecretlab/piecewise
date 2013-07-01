@@ -161,11 +161,18 @@
     if (self.draggable == NO)
         return;
     
+    [self stopDragging];
+}
+
+- (void) stopDragging {
     if (_gripJoint != NULL) {
-        cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
-        cpConstraintFree(_gripJoint);
-        self.dragging = NO;
-        _gripJoint = NULL;
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
+            cpConstraintFree(_gripJoint);
+            self.dragging = NO;
+            _gripJoint = NULL;
+
+        }];
     }
 }
 
@@ -211,6 +218,17 @@
 }
 
 - (void)objectWillUpdatePhysics:(ccTime)deltaTime {
+    if (self.dragBreakForce > 0) {
+        if (_gripJoint) {
+            cpFloat force = cpConstraintGetImpulse(_gripJoint)/deltaTime;
+            NSLog(@"Drag force: %f", force);
+            // If the force is almost as big as the joint's max force, break it.
+            if(force > 0.9*self.dragBreakForce){
+                [self stopDragging];
+            }
+
+        }
+    }
     // no-op; designed to be overridden
 }
 
