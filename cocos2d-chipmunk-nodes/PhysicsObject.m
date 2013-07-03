@@ -45,9 +45,12 @@
 }
 
 - (void)setCPBody:(cpBody *)CPBody {
-    if (CPBody != NULL)
+    if (CPBody != NULL) {
         cpBodySetUserData(CPBody, (void*)CFBridgingRetain(self));
-    [super setCPBody:CPBody];    
+        self.rotation = CC_RADIANS_TO_DEGREES(cpBodyGetAngle(CPBody));
+        self.position = cpBodyGetPos(CPBody);
+    }
+    [super setCPBody:CPBody];
 }
 
 - (void) setDraggable:(BOOL)draggable {
