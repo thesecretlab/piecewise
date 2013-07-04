@@ -140,6 +140,9 @@
     
     cpBody* body = self.CPBody;
     
+    if (self.CPBody == nil)
+        return;
+    
     CGPoint position = cpBodyGetPos(body);
     CGFloat rotation = self.rotation;
     
@@ -170,11 +173,12 @@
 - (void) stopDragging {
     if (_gripJoint != NULL) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
-            cpConstraintFree(_gripJoint);
-            self.dragging = NO;
-            _gripJoint = NULL;
-
+            if (_gripJoint != NULL) {
+                cpSpaceRemoveConstraint([self.physicsDelegate chipmunkSpace], _gripJoint);
+                cpConstraintFree(_gripJoint);
+                self.dragging = NO;
+                _gripJoint = NULL;
+            }
         }];
     }
 }
