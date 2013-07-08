@@ -35,6 +35,9 @@ typedef enum  {
 
 - (CCNode*) childWithIdentifier:(NSString*)identifier;
 
+// override
+- (float) wallWidth;
+
 // Whether physics debugging should be visible. Defaults to NO.
 @property (assign) BOOL showPhysicsDebugging;
 
