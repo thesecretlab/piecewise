@@ -228,8 +228,7 @@
     if (self.dragBreakForce > 0) {
         if (_gripJoint) {
             cpFloat force = cpConstraintGetImpulse(_gripJoint)/deltaTime;
-            NSLog(@"Drag force: %f", force);
-            // If the force is almost as big as the joint's max force, break it.
+            // If the force is almost as big as the joint's max force, break the joint.
             if(force > 0.9*self.dragBreakForce){
                 [self stopDragging];
             }
