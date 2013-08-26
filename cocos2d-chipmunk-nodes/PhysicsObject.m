@@ -35,6 +35,8 @@
         NSLog(@"%@ failed to find a parent that conforms to protocol CPPhysicsLayer!", [self class]);
     }
     
+    self.touchEnabled = YES;
+    
     self.physicsDelegate = parent;
     [[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
     
@@ -111,6 +113,9 @@
         return NO;
     
     if (_gripJoint != NULL)
+        return NO;
+    
+    if (_touchEnabled == NO)
         return NO;
     
     CGPoint position = [[CCDirector sharedDirector] convertTouchToGL:touch];
